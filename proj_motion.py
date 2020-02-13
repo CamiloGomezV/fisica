@@ -5,7 +5,7 @@ import matplotlib.animation as animation
 
 class Projectile:
     # class variables for simulation time and number of time slices
-    sim_time, time_slices = None, None
+    sim_time, time_slices = 0, 0 #cambie de Nonetype a int
     
     def __init__(self, x0, y0, v0, alpha0):
         # projectile initial position and velocity
@@ -14,7 +14,7 @@ class Projectile:
         self.vy = v0 * np.sin(np.radians(alpha0))
         
         # time interval to be simulated
-        self.t = np.linspace(0., sim_time, time_slices)
+        self.t = np.linspace(0., self.sim_time, self.time_slices) 
 
     def kinematics(self, ax, ay):
         # kinematic equations: position and velocity
@@ -28,6 +28,12 @@ class Projectile:
     def get_trajectory(self):
         # returns values of x(t) and y(t)
         return self.x, self.y
+    
+    def get_maxes(self): # aca hay un error ------------------------------
+    	#maximun points
+    	t_max = 2. * v0 * np.sin(np.radians(alpha0)) #/ GRAV
+    	x_max = v0 ** 2 * np.sin(2. * np.radians(alpha0)) #/ GRAV
+    	y_max = (v0 * np.sin(np.radians(alpha0))) ** 2 / (2.) #* GRAV)
 
 
 class Animator:
@@ -45,22 +51,24 @@ class Animator:
         self.xdata = self.ydata = None
     
     def set_animation(self):
-	# plot setup: axis, labels, title, grid, etc.         
-	fig = plt.figure()
-	ax = plt.axes(autoscale_on=False, xlim=(0, 100), ylim=(0, 100))
-	ax.set(xlabel='x [a.u.]', ylabel='y [a.u.]', title='Projectiles motion')
-	#ax.set_aspect('equal')
-	ax.grid()
-        # line points setup, time template, points on top of axes
-	line, = ax.plot([], [], 'o-', c='green', lw=0)
-	line.set_clip_on(False)
-	time_template = 'time = %.1f a.u.'
-	time_text = ax.text(0.4, 0.1, '', transform=ax.transAxes)
-	xdata, ydata = [], []
+    	# plot setup: axis, labels, title, grid, etc.
+    	self.fig = plt.figure()
+    	self.ax = plt.axes(autoscale_on=False, xlim=(0, 100), ylim=(0,100))
+    	self.ax.set(xlabel='x [a.u.]', ylabel='y [a.u.]', title='Projectiles motion')
+    	# ax.set_aspect('equal')
+    	self.ax.grid()
+    	# line points setup, time template, points on top of axes
+    	self.line, = self.ax.plot([], [], 'o-', c='green', lw=0)
+    	self.line.set_clip_on(False)
+    	self.time_template = 'time = %.1f a.u.'
+    	self.time_text = self.ax.text(0.4, 0.1, '', transform=self.ax.transAxes)
+    	self.xdata, self.ydata = [], []
 
     def init(self):
         # function used to draw a clear frame
-    
+        self.line.set_data(self.xdata, self.ydata)
+        self.time_text.set_text('')
+        return self.line, self.time_text
     def animate(self, idx):
         # function to call at each frame
         return self.line, self.point, self.time_text
@@ -73,6 +81,7 @@ class Animator:
                                       repeat=rep, interval=inval,
                                       init_func=self.init)
         plt.show()
+
 
 
 
@@ -90,7 +99,8 @@ print("parameters =", params)
 
 # calculate simulation time and set time slices
 sim_times = 2. * np.array(v0) * np.sin(np.radians(alpha0)) / grav_
-print("sim times =", sim_times)
+#print("sim times =", sim_times)
+
 
 Projectile.time_slices = 160
 print("time slices =", Projectile.time_slices)
@@ -112,10 +122,11 @@ framer = Animator(balls)
 
 # set up animation
 framer.set_animation()
+framer.animate(framer.number) # no seeeeeeeeeeeeeeeeeeeeeeeeeee
 
 # carry out animation (default parameters)
 framer.run_animation(inval=1000*Projectile.sim_time/Projectile.time_slices)
-
+print("control importante 5")
 
 
 
