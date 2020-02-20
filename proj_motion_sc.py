@@ -66,8 +66,7 @@ class Animator:
     	# ax.set_aspect('equal')
     	self.ax.grid()
     	# line points setup, time template, points on top of axes
-    	self.line, = self.ax.plot([], [], 'o-', c='green', lw=0)
-    	self.line.set_clip_on(False)
+    	
     	#self.time_template = 'time = %.1f a.u.'
     	#self.time_text = self.ax.text(0.4, 0.1, '', transform=self.ax.transAxes)
     	self.xdata, self.ydata = [], []
@@ -76,19 +75,28 @@ class Animator:
 
     def init(self):
         # function used to draw a clear frame
+        self.point = [self.ax.plot([], [], 'o-', c= self.cls[i], lw=0) for i in range(self.number)]
+        self.line = [self.ax.plot([], [], ls = '--', c = self.cls[i])for i in range(self.number)]
         #self.line.set_data(self.xdata, self.ydata)
         #self.time_text.set_text('')
         return self.line, self.point
         
 #hay que anadir algo para hacer con ese index y lograr llenar la lista        
     def animate(self, idx):
-    	if idx < self.number:
-    		for i in self.artists[idx].y:
-    			if i > 0:
-    				self.xdata.append(self.artists[idx].x)
-    				self.ydata.append(self.artists[idx].y)
+    	"""if idx < self.number:
+    		for q in range(idx):
+    			for i in self.artists[q].y:
+    				if i >= 0.:
+    					self.xdata.append(self.artists[q].x)
+    					self.ydata.append(self.artists[q].y)
     	#function to call at each frame
-    	self.line.set_data(self.xdata, self.ydata)
+    			self.line[q][0].set_data(self.xdata, self.ydata)"""
+    	for i in range(self.number):
+            a = self.artists[i]
+            self.xdata, self.ydata = a.get_trajectory()
+            self.line[i][0].set_data([self.xdata[i]], [self.ydata[i]])
+            if self.ydata[idx] >= 0.:
+                self.point[i][0].set_data([self.xdata[idx]], [self.ydata[idx]])
     	return self.line, self.point
     
     def run_animation(self, inval=10, rep=True):
@@ -114,7 +122,7 @@ print("parameters =", params)
 
 
 # calculate simulation time and set time slices
-sim_times = 2. * np.array(v0) * np.sin(np.radians(alpha0)) / grav_
+sim_times = max(2. * np.array(v0) * np.sin(np.radians(alpha0)) / grav_)
 print("sim times =", sim_times)
 
 Projectile.sim_time = 2. * np.array(v0) * np.sin(np.radians(90)) / grav_
