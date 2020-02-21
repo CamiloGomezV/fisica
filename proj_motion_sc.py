@@ -54,32 +54,30 @@ class Animator:
 		
         # instance variables to None; properly set in set_animation
         self.fig = self.ax = self.line = self.point = None
-        #self.time_template = self.time_text = None
+        self.time_template = self.time_text = None
         self.xdata = self.ydata = None
     
     
     def set_animation(self):
     	# plot setup: axis, labels, title, grid, etc.
     	self.fig = plt.figure()
-    	self.ax = plt.axes(autoscale_on=False, xlim=(0, 25), ylim=(0,13))
-    	self.ax.set(xlabel='X', ylabel='Y', title='Projectiles motion')
-    	# ax.set_aspect('equal')
+    	self.ax = plt.axes(autoscale_on=False, xlim=(-0.2, 26), ylim=(0,13))
+    	self.ax.set(xlabel = 'Eje X', ylabel = 'eje Y', title='Projectiles motion')
+    	#ax.set_aspect('equal')
     	self.ax.grid()
     	# line points setup, time template, points on top of axes
-    	
-    	#self.time_template = 'time = %.1f a.u.'
-    	#self.time_text = self.ax.text(0.4, 0.1, '', transform=self.ax.transAxes)
-    	self.xdata, self.ydata = [], []
+    	self.time_template = 'time = %.1f a.u.'
+    	self.time_text = self.ax.text(0.4, 0.1, '', transform=self.ax.transAxes)
     	
     	
 
     def init(self):
         # function used to draw a clear frame
-        self.point = [self.ax.plot([], [], 'o-', c= self.cls[i], lw=0) for i in range(self.number)]
-        self.line = [self.ax.plot([], [], ls = '--', c = self.cls[i])for i in range(self.number)]
-        #self.line.set_data(self.xdata, self.ydata)
-        #self.time_text.set_text('')
-        return self.line, self.point
+        self.point = [self.ax.plot([], [], 'o-', c = self.cls[i], lw = 0) for i in range(self.number)]
+        self.line = [self.ax.plot([], [], ls = '--', lw = 2, c = self.cls[i], label = "Alpha = " + str((i+1)*15)) for i in range(self.number)]
+        self.ax.legend()
+        self.time_text.set_text('')
+        #return #self.line, self.point
         
 #hay que anadir algo para hacer con ese index y lograr llenar la lista        
     def animate(self, idx):
@@ -91,13 +89,14 @@ class Animator:
     					self.ydata.append(self.artists[q].y)
     	#function to call at each frame
     			self.line[q][0].set_data(self.xdata, self.ydata)"""
-    	for i in range(self.number):
-            a = self.artists[i]
-            self.xdata, self.ydata = a.get_trajectory()
-            self.line[i][0].set_data([self.xdata[i]], [self.ydata[i]])
-            if self.ydata[idx] >= 0.:
-                self.point[i][0].set_data([self.xdata[idx]], [self.ydata[idx]])
-    	return self.line, self.point
+    	for q in range(self.number):
+    		artist = self.artists[q]
+    		self.xdata, self.ydata = artist.get_trajectory()
+    		if self.ydata[idx] >= 0.:
+    			self.line[q][0].set_data([self.xdata[0:idx]], [self.ydata[0:idx]])
+    			self.point[q][0].set_data([self.xdata[idx]], [self.ydata[idx]])
+    	#return self.line, self.point
+
     
     def run_animation(self, inval=10, rep=True):
         # set up to perform animation
