@@ -66,6 +66,7 @@ class Animator:
     	#ax.set_aspect('equal')
     	self.ax.grid()
     	# line points setup, time template, points on top of axes
+	self.xdata, self.ydata = [], []
     	self.time_template = 'time = %.1f a.u.'
     	self.time_text = self.ax.text(0.4, 0.1, '', transform=self.ax.transAxes)
     	
