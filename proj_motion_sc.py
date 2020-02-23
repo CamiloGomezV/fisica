@@ -74,26 +74,18 @@ class Animator:
     def init(self):
         # function used to draw a clear frame
         self.point = [self.ax.plot([], [], 'o-', c = self.cls[i], lw = 0) for i in range(self.number)]
-        self.line = [self.ax.plot([], [], ls = '--', lw = 2, c = self.cls[i], label = "Alpha = " + str((i+1)*15)) for i in range(self.number)]
-        self.ax.legend()
+        self.line = [self.ax.plot([], [], ls = 'o-', lw = 2, c = self.cls[i]]
         self.time_text.set_text('')
-        #return #self.line, self.point
+        #return self.line, self.point
         
-#hay que anadir algo para hacer con ese index y lograr llenar la lista        
+    #hay que anadir algo para hacer con ese index y lograr llenar la lista
+    #completar funcion
     def animate(self, idx):
-    	"""if idx < self.number:
-    		for q in range(idx):
-    			for i in self.artists[q].y:
-    				if i >= 0.:
-    					self.xdata.append(self.artists[q].x)
-    					self.ydata.append(self.artists[q].y)
-    	#function to call at each frame
-    			self.line[q][0].set_data(self.xdata, self.ydata)"""
     	for q in range(self.number):
     		artist = self.artists[q]
     		self.xdata, self.ydata = artist.get_trajectory()
     		if self.ydata[idx] >= 0.:
-    			self.line[q][0].set_data([self.xdata[0:idx]], [self.ydata[0:idx]])
+    			
     			self.point[q][0].set_data([self.xdata[idx]], [self.ydata[idx]])
     	#return self.line, self.point
 
@@ -136,8 +128,8 @@ balls = [Projectile(x0, y0, v0, val) for val in alpha0]
 [ball.kinematics(ax, ay) for ball in balls]
 
 # print some relevant values to check correctenessanimate
-#[print(ball.get_maxes()) for ball in balls]
-#[print(ball.get_trajectory()) for ball in balls]
+[print(ball.get_maxes()) for ball in balls]
+[print(ball.get_trajectory()) for ball in balls]
 
 
 # create animator handle object for animation
