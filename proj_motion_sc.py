@@ -85,7 +85,6 @@ class Animator:
     		artist = self.artists[q]
     		self.xdata, self.ydata = artist.get_trajectory()
     		if self.ydata[idx] >= 0.:
-    			
     			self.point[q][0].set_data([self.xdata[idx]], [self.ydata[idx]])
     	#return self.line, self.point
 
